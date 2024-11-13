@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+            flex-direction: column;
+            position: relative; /* Added for positioning the twinkle effect */
+        }
+
+        /* Twinkle effect */
+        .twinkle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Prevent interaction with the twinkle layer */
+            overflow: hidden;
+        }
+
+        .twinkle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            animation: twinkle 1s infinite alternate;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0.2;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .container {
+            background: rgba(25, 25, 25, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+            transition: transform 0.3s;
+            position: relative; /* Ensure the container is above the twinkle effect */
+            z-index: 1; /* Ensure the container is above the twinkle effect */
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            color: #00ffcc;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+        }
+
+        .form-inline {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px; /* Space between input and button */
+            font-size: 1em;
+            transition: border 0.3s;
+            background: rgba(0, 255, 204, 0.1);
+            color: #ffffff;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border: 2px solid #00ffcc;
+        }
+
+        .btn {
+            background-color: #00ffcc;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn:hover {
+            background-color: #00cc99;
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .loading {
+            display: none;
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #00ffcc;
+            animation: fadeIn 0 .5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #recommendations {
+            margin-top: 20px;
+            display: none;
+            text-align: left;
+            transition: opacity 0.5s;
+        }
+
+        .recommendation-item {
+            background: rgba(0, 255, 204, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .recommendation-item:hover {
+            transform: translateY(-3px);
+            background-color: rgba(0, 255, 204, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .back-btn {
+            display: none; /* Initially hidden */
+            margin-top: 20px;
+            cursor: pointer;
+            color: #00ffcc;
+            font-size: 1.2em;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 1em;
+            color: #00ffcc;
+            position: relative;
+            bottom: 0;
+            text-align: center;
+        }
+        .warp {
+            animation: pop 0.3s ease forwards;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="twinkle"></div>
+    <div class="container">
+        <h1>Movie Recommendation System</h1>
+        <form id="movieForm" class="form-inline">
+            <input type="text" id="movieTitle" placeholder=" Enter your favourite movie name" required>
+            <button type="submit" class="btn"><i class="fas fa-search"></i> Get Recommendations </button>
+        </form>
+        <div class="loading" id="loading"> Loading recommendations...</div>
+        <div id="recommendations"></div>
+        <div id="backBtn" class="back-btn"><i class="fas fa-arrow-left"></i> Back</div>
+    </div>
+    <footer>
+        <p>@Thecoderchic</p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
